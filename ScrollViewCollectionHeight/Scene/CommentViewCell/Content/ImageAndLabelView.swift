@@ -74,7 +74,6 @@ private extension ImageAndLabelView {
     func setupViews() {
         addSubview(containerView)
         
-        let offset: CGFloat = 16.0
         NSLayoutConstraint.activate([
             containerView.centerXAnchor.constraint(equalTo: centerXAnchor),
             containerView.centerYAnchor.constraint(equalTo: centerYAnchor)

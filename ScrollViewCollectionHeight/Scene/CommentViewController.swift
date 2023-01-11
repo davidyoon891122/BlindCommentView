@@ -9,10 +9,39 @@ import UIKit
 
 final class CommentViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
+        let layout = DynamicFlowLayout()
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        layout.scrollDirection = .vertical
         
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        let collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: layout
+        )
+        
         collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        collectionView.register(
+            ContentCell.self,
+            forCellWithReuseIdentifier: ContentCell.identifier
+        )
+        
+        collectionView.register(
+            AdvertiseCell.self,
+            forCellWithReuseIdentifier: AdvertiseCell.identifier
+        )
+        
+        collectionView.register(
+            SortMenuCell.self,
+            forCellWithReuseIdentifier: SortMenuCell.identifier
+        )
+
+        collectionView.register(
+            CommentCell.self,
+            forCellWithReuseIdentifier: CommentCell.identifier
+        )
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -32,23 +61,63 @@ final class CommentViewController: UIViewController {
 
 extension CommentViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 3
+        return 4
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
-        return 5
+        if section == 0 {
+            return 1
+        }
+        else if section == 1 {
+            return 1
+        }
+        else if section == 2 {
+            return 1
+        }
+        else if section == 3 {
+            return 10
+        }
+        return 1
     }
     
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        UICollectionViewCell()
+        if indexPath.section == 0 {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: ContentCell.identifier,
+                for: indexPath
+            ) as? ContentCell else { return UICollectionViewCell() }
+            return cell
+        }
+        else if indexPath.section == 1 {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: AdvertiseCell.identifier,
+                for: indexPath
+            ) as? AdvertiseCell else { return UICollectionViewCell() }
+            return cell
+        }
+        else if indexPath.section == 2 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: SortMenuCell.identifier, for: indexPath) as? SortMenuCell else { return UICollectionViewCell() }
+            cell.setupCell()
+            return cell
+        }
+        else if indexPath.section == 3 {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CommentCell.identifier, for: indexPath) as? CommentCell else { return UICollectionViewCell() }
+
+            return cell
+        }
+        
+        return UICollectionViewCell()
     }
-    
+}
+
+
+extension CommentViewController: UICollectionViewDelegateFlowLayout {
     
 }
 

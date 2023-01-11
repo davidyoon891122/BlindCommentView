@@ -8,6 +8,7 @@
 import UIKit
 
 final class ContentCell: UICollectionViewCell {
+    static let identifier = "ContentCell"
     private let creatorView = ContentCreatorView()
     
     private lazy var titleLabel: UILabel = {
@@ -49,6 +50,19 @@ final class ContentCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    override func preferredLayoutAttributesFitting(
+        _ layoutAttributes: UICollectionViewLayoutAttributes
+    ) -> UICollectionViewLayoutAttributes {
+        let targetSize = CGSize(width: layoutAttributes.frame.width, height: 0)
+        layoutAttributes.frame.size = contentView.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        
+        return layoutAttributes
+    }
 }
 
 private extension ContentCell {
@@ -61,7 +75,7 @@ private extension ContentCell {
             separatorView
         ]
             .forEach {
-                addSubview($0)
+                contentView.addSubview($0)
             }
         
         creatorView.translatesAutoresizingMaskIntoConstraints = false
@@ -70,35 +84,36 @@ private extension ContentCell {
         
         let offset: CGFloat = 16.0
         NSLayoutConstraint.activate([
-            creatorView.topAnchor.constraint(equalTo: topAnchor),
-            creatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            creatorView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            creatorView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            creatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            creatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         titleLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: creatorView.bottomAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: offset),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor)
+            titleLabel.topAnchor.constraint(equalTo: creatorView.bottomAnchor, constant: offset),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: offset),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
             contentTextView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: offset),
-            contentTextView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: offset),
-            contentTextView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -offset),
+            contentTextView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: offset),
+            contentTextView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -offset),
         ])
         
         NSLayoutConstraint.activate([
             iconAndLabelStackView.topAnchor.constraint(equalTo: contentTextView.bottomAnchor, constant: offset),
-            iconAndLabelStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            iconAndLabelStackView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            iconAndLabelStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            iconAndLabelStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
         
         NSLayoutConstraint.activate([
             separatorView.topAnchor.constraint(equalTo: iconAndLabelStackView.bottomAnchor, constant: offset),
-            separatorView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            separatorView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            separatorView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            separatorView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separatorView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
     }
 }
